@@ -1,0 +1,25 @@
+{% extends 'kiosk_base.html' %}
+
+{% block jumbotron %}
+<div class="jumbotron text-center">
+    <h1>Welcome to Johnny's Clinic</h1>
+</div>
+{% endblock %}
+{% block content %}
+<div align="center">
+    {% if success %}
+    <h3 id="success">{{ success }}</h3>
+    {% endif %}
+    <form action="{% url 'kiosk:index' %}" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Go" name="reason_btn">
+    </form>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+$('#succcess').fadeOut(2000);
+</script>
+{% endblock %}

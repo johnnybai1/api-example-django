@@ -1,0 +1,19 @@
+html, body {
+    margin: 0; padding: 0; border: 0;
+}
+#left, #right{
+    position: fixed;
+    width: 50%;
+    height: 100%;
+    top: 0
+}
+
+#left {
+    background: #337ab7
+    left: 0
+}
+
+#right {
+    background: #449d44
+    right: 0
+}

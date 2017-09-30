@@ -1,0 +1,137 @@
+{% extends 'doctor_base.html' %}
+{% block content %}
+<form>
+    <div class="form-group row">
+        <label for="average_wait_today" class="col-sm-4 col-form-label">Today's Average Wait Time</label>
+        <div class="col-sm-8">
+            <input class="form-control-plaintext" id="average_wait_today" readonly>
+        </div>
+    </div>
+</form>
+<h2 class="text-center">Checked in Patients</h2>
+<div class="row">
+    <div class="table-responsive" align="center" id="check_ins">
+        <table class="table table-hover table-condensed" id="check_in_table">
+            <thead>
+            <tr>
+                <th>Appt. Id</th>
+                <th>Patient Name</th>
+                <th>Time Spent Waiting</th>
+            </tr>
+            </thead>
+            <tbody id="check_in_table_body">
+            </tbody>
+        </table>
+    </div>
+</div>
+<!--
+Parses through tables to populate our tables
+-->
+{% for k,v in tables.items %}
+    <h2 class="text-center">{{k}} Patients</h2>
+    <div class="row">
+        <div class="table-responsive" align="center">
+            <table class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>Appt. Id</th>
+                    <th>Patient Name</th>
+                    <th>Time Spent Waiting</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for row in v %}
+                <tr class="clickable_row" data-id="{{ row.id }}">
+                    <td>{{ row.id }}</td>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.wait_time }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endfor %}
+
+<!--Modal: confirm seeing patient-->
+<div id="see_patient_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!--Modal contents-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                </button>
+                <h4 class="modal-title">Confirm Patient</h4>
+            </div>
+            <div class="modal-body" id="see_patient_modal_body">
+                <!--We'll populate this via javascript-->
+            </div>
+            <div class="modal-footer">
+                <form id="see_patient_form" method="GET">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"
+                        id="cancel">No</button>
+                    <input type="submit" class="btn btn-success" value="Confirm"
+                           id="confirm_see_patient" name="confirm_see_patient">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<!--Get wait time first so our row text colors are appropriate-->
+<script>
+    get_wait();
+    setInterval("get_wait()", 5000);
+</script>
+<script>
+    var csrftoken = getCookie('csrftoken');
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    $(document).ready(function() {
+        checkin_table_refresher();
+        setInterval("checkin_table_refresher()", 5000);
+        $('#see_patient_modal').modal({
+            keyboard: true,
+            backdrop: 'static',
+            show: false,
+        });
+        var id = ''
+        var name = ''
+        $('#check_in_table').on('click', '.see_patient', function(){
+            id = $(this).get(0).id;
+            name = $('#' + id + ' .name').html()
+            $('#see_patient_modal_body').html($('<p>Are you seeing patient ' + name + '?</p>'));
+            $("#see_patient_form").attr("action", get_patient_url(id))
+        });
+        $(".clickable_row").on('click', function(){
+            window.location.href = get_patient_url($(this).attr('data-id'))
+        });
+    });
+</script>
+{% endblock %}
+<!--
+checkin_table_refresher is continuously run to update check_in table and
+wait time
+
+$(#check_in_table).on('click', '.see_patient', {..})
+Sets the modal content with appropriate message
+Sets the corresponding form action to appropriate Django view
+
+Code to check which button was clicked
+$('#see_patient_modal .modal-footer submit').on('click', function(event) {
+    var $button = $(event.target);
+    $(this).closest('.modal').one('hidden.bs.modal', function() {
+        if ($button[0].id == "confirm_see_patient") {
+        }
+    });
+});
+
+-->

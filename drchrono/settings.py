@@ -15,7 +15,6 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
@@ -39,6 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'drchrono',
     'social.apps.django_app.default',
+    'kiosk',
+    'doctor',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -62,7 +63,9 @@ ROOT_URLCONF = 'drchrono.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates').replace('\\','/'),],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates').replace('\\','/'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -96,7 +99,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Los_Angeles' # west coast
 
 USE_I18N = True
 
@@ -109,3 +112,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# OAuth2 Custom Provider - python-social-auth
+# http://python-social-auth.readthedocs.io/en/latest/configuration/django.html
+# Best practice to not code in keys directly
+SOCIAL_AUTH_DRCHRONO_KEY = 
+SOCIAL_AUTH_DRCHRONO_SECRET = 
+SOCIAL_AUTH_DRCHRONO_SCOPE = []#['patients:summary:read patients:summary:write calendar:read calendar:write clinical:read clinical:write']
+LOGIN_REDIRECT_URL = 'http://localhost:8000/'

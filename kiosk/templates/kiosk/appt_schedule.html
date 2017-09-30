@@ -1,0 +1,21 @@
+{% extends 'kiosk_base.html' %}
+
+{% block jumbotron %}
+<div class="jumbotron text-center">
+    <h1>Appointment Scheduling</h1>
+</div>
+
+{% endblock %}
+
+{% block content %}
+
+<div>
+    <form action="{% url 'kiosk:appt_schedule' %}" method="post"
+          enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" class="btn" name="schedule_confirm_btn" value="Confirm" >
+    </form>
+</div>
+
+{% endblock %}

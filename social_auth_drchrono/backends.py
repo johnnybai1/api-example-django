@@ -1,4 +1,4 @@
-import os
+import os, datetime, requests
 from social.backends.oauth import BaseOAuth2
 
 

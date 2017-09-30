@@ -1,0 +1,44 @@
+{% extends 'kiosk_base.html' %}
+<!--
+Show either check-in form or demographics form depending on what contexts the
+user passes in
+-->
+{% block jumbotron %}
+<div class="jumbotron text-center">
+    {% if demographics_form %}
+    <h1>Personal Information</h1>
+    <p>Hello {{ first_name }}, please take a moment to review your information.</p>
+    {% if status %}
+        Note: you have already checked-in.
+    {% endif %}
+    {% else %}
+        <h1>Patient Check In</h1>
+{% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+{% if demographics_form %}
+<!--We have user's demographic data, show it-->
+<div align="center">
+    <form action="{% url 'kiosk:appt_checkin' %}" method="post"
+          enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ demographics_form.as_p }}
+        {{ message_form.as_p }}
+        <input type="hidden" class="btn" name="status" value="success">
+        <input type="submit" class="btn" name="info_confirm_btn" value="Confirm" >
+    </form>
+</div>
+{% else %}
+<!--Show check in forms-->
+<div align="center">
+<form action="{% url 'kiosk:appt_checkin' %}" method="post"
+      enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ appt_checkin_form.as_p }}
+    <input type="submit" class="btn" value="Check in" name="appt_checkin_btn">
+</form>
+</div>
+{% endif %}
+{% endblock %}

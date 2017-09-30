@@ -1,0 +1,58 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>KioskApp</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/kiosk.css' %}"/>
+</head>
+<!--Page content below-->
+<style>
+</style>
+<body>
+    <nav class="navbar navbar-inverse navbar-static-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle"
+                            data-toggle="collapse" data-target="#doctor_navbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{% url 'kiosk:index' %}">JBC</a>
+                </div>
+                <div class="collapse navbar-collapse" id="doctor_navbar">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="{% url 'kiosk:index' %}">Home</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="{% url 'logout' %}">Logout <span class="glyphicon glyphicon-log-out"></span></a></li>
+                    </ul>
+                </div>
+            </div>
+    </nav>
+    {% block jumbotron %}
+    {% endblock %}
+    <div class="container-fluid">
+        {% if msg %}
+            <p>{{ msg }}</p>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/doctor/main.js' %}"></script>
+    <script>
+        $("#navbar-list li").find(".active").removeClass("active");
+            var path = window.location.pathname;
+            $("#navbar-list a").each(function(){
+                var href = $(this).attr('href')
+                if (href == path) {
+                    $(this).closest('li').addClass('active');
+                }
+            });
+    </script>
+    {% block javascript %}{% endblock %}
+</body>
+</html>

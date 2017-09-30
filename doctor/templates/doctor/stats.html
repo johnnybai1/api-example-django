@@ -1,0 +1,137 @@
+{% extends 'doctor_base.html' %}
+
+{% block content %}
+<h2 class="text-center">Appointment Statistics</h2>
+<!--Buttons-->
+<div class="form-inline" align="center">
+<div class="form-group">
+
+    <form action="{% url 'doctor:stats' %}" method="get">
+        <input type="hidden" name="lookback" value="yesterday">
+        <input type="submit" class="submit_btn btn" value="Yesterday"/>
+    </form>
+</div>
+
+<div class="form-group">
+    <form action="{% url 'doctor:stats' %}" method="get">
+        <input type="hidden" name="lookback" value="week">
+        <input type="submit" class="submit_btn btn" value="Last Week"/>
+    </form>
+</div>
+
+<div class="form-group">
+    <form action="{% url 'doctor:stats' %}" method="get">
+        <input type="hidden" name="lookback" value="30_days">
+        <input type="submit" class="submit_btn btn" value="30 Days Ago"/>
+    </form>
+</div>
+
+<div class="form-group">
+    <form action="{% url 'doctor:stats' %}" method="get">
+        <input type="hidden" name="lookback" value="180_days">
+        <input type="submit" class="submit_btn btn" value="180 Days Ago"/>
+    </form>
+</div>
+
+</div>
+</div>
+
+<h4 class="text-center">{{ lookback_str }}</h4>
+<h4 class="text-center">Summary</h4>
+<p>You had <b>{{ count }}</b> patients with an average wait time of <b>{{ h }}</b>
+    hours <b>{{ m }}</b> minutes and <b>{{ s }}</b> seconds.
+</p>
+{% if by_day %}
+<h4 class="text-center">Breakdown by Day</h4>
+<div class="table-responsive" align="center">
+    <table class="table table-hover" id="wait_table">
+        <thead>
+        <tr>
+            <th>Wait Times</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+            <th>Sunday</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr data-id="total">
+            <td><a id="" data-toggle="modal" data-target="#modChart"
+                   data-source="{{ by_day_csv }}" data-target-source="{{ adj_by_day_csv }}">
+                Totals</a></td>
+            <td>{{ by_day.Monday }}</td>
+            <td>{{ by_day.Tuesday }}</td>
+            <td>{{ by_day.Wednesday }}</td>
+            <td>{{ by_day.Thursday }}</td>
+            <td>{{ by_day.Friday }}</td>
+            <td>{{ by_day.Saturday }}</td>
+            <td>{{ by_day.Sunday }}</td>
+        </tr>
+        <tr data-id="average">
+            <td><a id="avg" data-toggle="modal" data-target="#modChart"
+                   data-source="{{ avg_by_day_csv }}" data-target-source="{{ adj_avg_by_day_csv }}">
+                Averages</a></td>
+            <td>{{ avg_by_day.Monday }}</td>
+            <td>{{ avg_by_day.Tuesday }}</td>
+            <td>{{ avg_by_day.Wednesday }}</td>
+            <td>{{ avg_by_day.Thursday }}</td>
+            <td>{{ avg_by_day.Friday }}</td>
+            <td>{{ avg_by_day.Saturday }}</td>
+            <td>{{ avg_by_day.Sunday }}</td>
+        </tr>
+        <tr data-id="adjusted">
+            <td><a id="adj" data-toggle="modal" data-target="#modChart"data-source="{{ adj_by_day_csv }}">Adj. Totals</a></td>
+            <td>{{ adj_by_day.Monday }}</td>
+            <td>{{ adj_by_day.Tuesday }}</td>
+            <td>{{ adj_by_day.Wednesday }}</td>
+            <td>{{ adj_by_day.Thursday }}</td>
+            <td>{{ adj_by_day.Friday }}</td>
+            <td>{{ adj_by_day.Saturday }}</td>
+            <td>{{ adj_by_day.Sunday }}</td>
+        </tr>
+        <tr data-id="adjusted_average">
+            <td><a id="adj_avg" data-toggle="modal" data-target="#modChart"data-source="{{ adj_avg_by_day_csv }}">Adj. Averages</a></td>
+            <td>{{ adj_avg_by_day.Monday }}</td>
+            <td>{{ adj_avg_by_day.Tuesday }}</td>
+            <td>{{ adj_avg_by_day.Wednesday }}</td>
+            <td>{{ adj_avg_by_day.Thursday }}</td>
+            <td>{{ adj_avg_by_day.Friday }}</td>
+            <td>{{ adj_avg_by_day.Saturday }}</td>
+            <td>{{ adj_avg_by_day.Sunday }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+{% endif %}
+<!--Modal for a plot if row is clicked-->
+<div class="modal fade" id="modChart" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="stats_modal_title">
+                    Wait Times By Day (Minutes)
+                </h4>
+            </div>
+            <div class="modal-body">
+                <canvas id="canvas" width="568" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.1/Chart.min.js"></script>
+<script>
+$(document).ready(function() {
+    build_stats_chart();
+});
+</script>
+<script>
+</script>
+{% endblock %}

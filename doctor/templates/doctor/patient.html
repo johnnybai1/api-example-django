@@ -1,0 +1,54 @@
+{% extends 'doctor_base.html' %}
+
+{% block jumbotron %}
+{% endblock %}
+
+{% block content %}
+<!--Display some information about our patient or their appointment-->
+<div class="jumbotron text-center">
+    <h1>Patient: {{ appointment.first_name }} {{ appointment.last_name }}</h1>
+</div>
+<div align="center">
+    Name: {{ appointment.first_name }} {{ appointment.last_name }}<br>
+    Check-in time: {{ appointment.checkin_time }}<br>
+    Wait time: {{ hours }}:{{ minutes }}:{{ seconds }}<br>
+    Reason: {{ reason }} <br>
+    Message from patient: <b>{{ message }}</b><br>
+
+</div>
+    <div class="form-group">
+        <label for="notes">Notes:</label>
+        <textarea class="form-control" rows="5" cols="2" id="notes">{{ notes }}</textarea>
+    </div>
+    <button type="button" class="btn btn-default" data-toggle="modal"
+                data-target="#patient_detail">Patient Done</button>
+<!--
+Modal to let doctor confirm that they are done with the patient
+-->
+<div id="patient_detail" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!--Modal contents-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                </button>
+                <h4 class="modal-title">Confirm Patient</h4>
+            </div>
+            <div class="modal-body" id="patient_modal_body">
+                <p>Are you done with the patient?</p>
+            </div>
+            <div class="modal-footer">
+                <form id="done_patient_form"
+                      action="{% url 'doctor:patient_done' appointment.id %}"
+                      method="GET">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"
+                        id="cancel">No</button>
+                    <input type="submit" class="btn btn-success" value="Yes"
+                           id="confirm_done_patient">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

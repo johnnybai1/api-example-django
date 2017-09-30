@@ -1,8 +1,46 @@
+{% load static %}
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'css/drchrono.css' %}"/>
 <!DOCTYPE html>
+<meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0"/>
 <html>
-  <body>
-    <a href="{% url 'social:begin' 'drchrono' %}">
-      drchrono OAuth
-    </a>
-  </body>
+<body>
+<!--
+Have two buttons that fill up the left and half side of the page
+-->
+<div>
+    <div style="float: left; width: 50%; min-height: 100%; text-align: center;">
+        <a href="{% url 'social:begin' 'drchrono' %}?next=/kiosk"
+           class="btn btn-primary btn-block" id="left"
+           style="padding-bottom: 100%; margin-bottom: -100%">
+            <h2>Information<br>Kiosk<br><br>for Patients</h2>
+        </a>
+    </div>
+    <div style="float: right; width: 50%; min-height: 100%">
+        <a href="{% url 'social:begin' 'drchrono' %}?next=/doctor"
+           class="btn btn-success btn-block" id="right"
+           style="padding-bottom: 100%; margin-bottom: -100%">
+            <h2>Clinic<br>Logistics<br><br>for Doctors</h2>
+        </a>
+    </div>
+</div>
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/doctor/main.js' %}"></script>
+<!--Fade opposite buttons-->
+<script>
+    $(document).ready(function(){
+        $('#left').on('click', function() {
+            console.log('left clicked');
+            $('#right').fadeOut();
+        });
+        $('#right').on('click', function() {
+            console.log('right clicked');
+            $('#left').fadeOut();
+        });
+    });
+</script>
+</body>
 </html>

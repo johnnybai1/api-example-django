@@ -1,0 +1,13 @@
+{% extends 'doctor_base.html' %}
+
+{% block jumbotron %}
+<div class="jumbotron text-center">
+    <h1>Welcome Dr. {{ request.session.first_name }} {{ request.session.last_name }}</h1>
+</div>
+{% endblock %}
+{% block content %}
+<h3>Summary</h3>
+<p>You have {{ remaining }} patients left today.</p>
+<p>Your next scheduled appointment is at TIME with <a href="#">PATIENT</a>.</p>
+<!--<p>Your next scheduled appointment is at {{ time_str }} with {{patient_first_name}}.</p>-->
+{% endblock %}
